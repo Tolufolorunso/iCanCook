@@ -56,9 +56,11 @@ app.get('/', (req, res) => {
 const userRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');
 const recipeRouter = require('./routes/recipeRoutes');
+const commentRouter = require('./routes/commentRoutes');
 app.use('/users/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/recipes', recipeRouter);
+app.use('/recipes', commentRouter);
 
 app.all('*', (req, res, next) => {
 	// res.status(404).json({
