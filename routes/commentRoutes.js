@@ -9,14 +9,12 @@ const {
 } = require('../controllers/commentController');
 
 router.post(
-	'/comments/:recipeID',
+	'/:recipeID',
 	[check('comment', 'Comment is required').not().isEmpty()],
 	authorize,
 	postComment
 );
 
-router.delete('/comments/:recipeID/:commentID', authorize, deleteComment);
-// router.put('/like/:postId', protect, likePost);
-// router.put('/unlike/:postId', protect, unLikePost);
+router.delete('/:recipeID/:commentID', authorize, deleteComment);
 
 module.exports = router;
