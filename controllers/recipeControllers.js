@@ -3,15 +3,29 @@ const Recipe = require('../models/recipeModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
+const sendRes = (statusCode, status, data, res, len) => {
+	if (len) {
+		res.status(statusCode).json({
+			status: status,
+			result: len,
+			data
+		});
+	} else {
+		res.status(statusCode).json({
+			status: status,
+			data
+		});
+	}
+};
+
 // @desc        create recipe.
 // @route       POST /auth
 // @access      Private
 exports.createRecipe = catchAsync(async (req, res, next) => {
+	req.body.publisher = req.user._id;
 	const recipe = await Recipe.create(req.body);
-	res.status(201).json({
-		status: 'success',
-		message: recipe
-	});
+
+	sendRes(201, 'success', recipe, res);
 });
 
 // @desc        Get All recipes.
@@ -44,32 +58,23 @@ exports.getAllRecipe = catchAsync(async (req, res, next) => {
 
 	// EXECUTE QUERY
 	const recipes = await query;
-	// console.log(recipes);
-
-	res.status(200).json({
-		status: 'success',
-		result: recipes.lenght,
-		message: recipes
-	});
+	sendRes(200, 'success', recipes, res, recipes.length);
 });
 
 // @desc        Get recipe.
-// @route       GET /auth
+// @route       GET /recipes/:recipeId
 // @access      Public
 exports.getRecipe = catchAsync(async (req, res, next) => {
 	const recipe = await Recipe.findById(req.params.recipeId);
 	if (!recipe) {
-		console.log(!recipe);
 		return next(new AppError('No Recipe found with the ID', 404));
 	}
-	res.status(200).json({
-		status: 'success',
-		message: recipe
-	});
+
+	sendRes(200, 'success', recipe, res);
 });
 
 // @desc        Update recipe.
-// @route       PATCH /auth
+// @route       PATCH /recipes/:recipeId
 // @access      Private
 exports.updateRecipe = catchAsync(async (req, res, next) => {
 	const recipe = await Recipe.findByIdAndUpdate(req.params.recipeId, req.body, {
@@ -77,21 +82,16 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
 		runValidators: true
 	});
 
-	res.status(200).json({
-		status: 'success',
-		message: recipe
-	});
+	sendRes(200, 'success', recipe, res);
 });
 
 // @desc        Delete Recipe.
-// @route       DELETE /auth
+// @route       DELETE /recipes/:recipeId
 // @access      Private
 exports.deleteRecipe = catchAsync(async (req, res, next) => {
 	await Recipe.findByIdAndDelete(req.params.recipeId);
-	res.status(204).json({
-		status: 'success',
-		message: 'Deleted successfuly'
-	});
+
+	sendRes(204, 'success', 'Recipe deleted successfully', res);
 });
 
 // // @desc        Get Logged in user.
