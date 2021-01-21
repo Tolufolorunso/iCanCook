@@ -57,10 +57,12 @@ const userRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');
 const recipeRouter = require('./routes/recipeRoutes');
 const commentRouter = require('./routes/commentRoutes');
+const likeUnlikeRouter = require('./routes/likeUnlikeRoutes');
 app.use('/users/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/recipes', recipeRouter);
-app.use('/recipes', commentRouter);
+app.use('/recipes/comments', commentRouter);
+app.use('/recipes', likeUnlikeRouter);
 
 app.all('*', (req, res, next) => {
 	// res.status(404).json({

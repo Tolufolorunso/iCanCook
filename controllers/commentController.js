@@ -7,8 +7,7 @@ const AppError = require('../utils/appError');
 const sendRes = (statusCode, status, data, res) => {
 	res.status(statusCode).json({
 		status: status,
-		message: 'comment created',
-		comments: data
+		data
 	});
 };
 
@@ -18,9 +17,10 @@ const sendRes = (statusCode, status, data, res) => {
 exports.postComment = catchAsync(async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		return res.status(422).json({
-			errorMessage: errors.array()
-		});
+		// return res.status(422).json({
+		// 	errorMessage: errors.array()
+		// });
+		return sendRes(422, 'error', errors.array(), res);
 	}
 
 	// const user = await User.findById(req.user.id);
@@ -40,8 +40,9 @@ exports.postComment = catchAsync(async (req, res, next) => {
 	};
 	recipe.comments.unshift(commentObj);
 	await recipe.save();
+	console.log('43', recipe.comment);
 
-	sendRes(201, 'success', recipe.comment, res);
+	sendRes(201, 'success', recipe.comments, res);
 });
 
 // @desc        Delete a comment.
